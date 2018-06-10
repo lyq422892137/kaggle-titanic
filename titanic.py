@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from missingvalues import missing_ratio
+from buildNN import BuildNN
 
 # use csv package to read trian.csv
 train_ori = csv.reader(open("train.csv","r"))
@@ -60,10 +61,22 @@ train = train.sample(frac = 1)
 train_new = train.head(round(train.shape[0] * 0.8))
 train_cv = train.head(round(train.shape[0] * 0.2))
 
+# store y
+train_new_y = np.array([train_new.Survived])
+del train_new["Survived"]
+
+train_cv_y = np.array([train_cv.Survived])
+del train_cv["Survived"]
+
 # Empty DataFrame
 # Columns: [PassengerId, Survived, Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked]
 # Index: []
 
 # similar to R's summary()
 #print(train_ori.describe())
+#print(train_new_y.shape) (1,713)
+
+train_new = train_new.T
+layer_dims = [train_new.shape[0],5,train_new_y.shape[0]]
+BuildNN(layer_dims, 0.03, train_new, train_new_y)
 
