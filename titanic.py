@@ -6,6 +6,7 @@ import pandas as pd
 from missingvalues import missing_ratio
 from buildNN import BuildNN
 from buildNN import test
+from buildNN import predict
 
 # use csv package to read trian.csv
 train_ori = csv.reader(open("train.csv","r"))
@@ -82,7 +83,16 @@ train_cv = train_cv.T
 layer_dims = [train_new.shape[0],5, train_new_y.shape[0]]
 learning_rates = [0.0075]
 params = BuildNN(layer_dims, learning_rates, train_new, train_new_y, iterations= 3, print_cost=True)
-test(train_new, train_new_y, params)
+predis = test(train_new, train_new_y, params)
 test(train_cv, train_cv_y, params)
 
 
+test_ori = pd.read_csv('test.csv')
+id = test_ori.loc[:,["PassengerId"]]
+test = test_ori.loc[:,["Pclass","Sex","Age","SibSp","Fare","Parch","Embarked"]]
+test.Sex = test.Sex.replace({"female":1, "male":0})
+test.Embarked = test.Embarked.replace({"C":0, "Q": 1,"S":2})
+missing_ratio(train)
+test = test.T
+results = predict(test,params)
+print(results)

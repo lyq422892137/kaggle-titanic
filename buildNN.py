@@ -37,10 +37,6 @@ def BuildNN(layer_dims, learning_rates, X, Y, iterations = 2000, print_cost = Fa
                     print("Cost after iteration %i: %f" %(i, cost))
                 if print_cost and i % 1 == 0:
                     costs.append(cost)
-                    if i > 0:
-                        if costs[i] > costs[i - 1]:
-                            final_params.append(params)
-                            break;
                 if i == iterations - 1:
                     Yhat.append(AL)
                     final_params.append(params)
@@ -51,11 +47,11 @@ def BuildNN(layer_dims, learning_rates, X, Y, iterations = 2000, print_cost = Fa
         plt.title("Learning rate = " + str(learning_rate))
         plt.show()
 
-        # predictions = (Yhat[j] > threshold)
-        # print("Training Set Accuracy :%d" % float(
-        #     (np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T)) / float(Y.size) * 100) + "%")
+        predictions = (Yhat[j] > threshold)
+        print("Training Set Accuracy :%d" % float(
+            (np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T)) / float(Y.size) * 100) + "%")
 
-    return final_params
+    return params
 
 # --------------- prediction ------------------
 def test(X, Y, params, threshold = 0.5):
