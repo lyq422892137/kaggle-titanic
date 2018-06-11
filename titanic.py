@@ -2,10 +2,10 @@
 
 import csv
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 from missingvalues import missing_ratio
 from buildNN import BuildNN
+from buildNN import test
 
 # use csv package to read trian.csv
 train_ori = csv.reader(open("train.csv","r"))
@@ -58,8 +58,8 @@ missing_ratio(train)
 
 # we separate the train_ori to train_new(80%) and train_cv (20%) randomly
 train = train.sample(frac = 1)
-train_new = train.head(round(train.shape[0] * 0.8))
-train_cv = train.head(round(train.shape[0] * 0.2))
+train_new = train.head(round(train.shape[0] * 0.7))
+train_cv = train.head(round(train.shape[0] * 0.3))
 
 # store y
 train_new_y = np.array([train_new.Survived])
@@ -76,7 +76,13 @@ del train_cv["Survived"]
 #print(train_ori.describe())
 #print(train_new_y.shape) (1,713)
 
+
 train_new = train_new.T
-layer_dims = [train_new.shape[0],5,train_new_y.shape[0]]
-BuildNN(layer_dims, 0.03, train_new, train_new_y)
+train_cv = train_cv.T
+layer_dims = [train_new.shape[0],5, train_new_y.shape[0]]
+learning_rates = [0.0075]
+params = BuildNN(layer_dims, learning_rates, train_new, train_new_y, iterations= 3, print_cost=True)
+test(train_new, train_new_y, params)
+test(train_cv, train_cv_y, params)
+
 
